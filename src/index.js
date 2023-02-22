@@ -12,16 +12,11 @@ const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-const ogc3DTile = new OGC3DTile({
-    url: "./Scene/PPmSUD_OUESTmCesium.json",
-    renderer: renderer
-});
+let ogc3DTile;
 
-scene.add(ogc3DTile);
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper)
 
-setInterval(function () {
-    ogc3DTile.update(camera);
-}, 20);
 
 //controls
 const controls = new PointerLockControls(camera, renderer.domElement)
@@ -39,6 +34,12 @@ const onKeyDown = function (event) {
         case "KeyD":
             controls.moveRight(1.25)
             break
+        case "KeyV":
+            controls.moveUp(1.25)
+            break
+        case "KeyC":
+            controls.moveUp(-1.25)
+            break
     }
 }
 document.addEventListener('keydown', onKeyDown, false)
@@ -48,7 +49,52 @@ document.addEventListener("click", () => {
   
 }, false)
 
+document.getElementById("m1").addEventListener("click", () => {
+    setupModel1();
+})
 
+document.getElementById("m2").addEventListener("click", () => {
+    setupModel2();
+})
+
+const setupModel1 = () => {
+    camera.position.set(0,0,0);
+    if(!!ogc3DTile) scene.remove(ogc3DTile)
+    ogc3DTile = new OGC3DTile({
+        url: "./Scene/PPmSUD_OUESTmCesium.json",
+        renderer: renderer,
+        centerModel: true,
+        geometricErrorMultiplier: 3.0,
+        loadOutsideView: true
+    });
+    
+    
+    scene.add(ogc3DTile);
+    
+    setInterval(function () {
+        ogc3DTile.update(camera);
+    }, 20);
+}
+
+
+const setupModel2 = () => {
+    camera.position.set(0,0,0);
+    if(!!ogc3DTile) scene.remove(ogc3DTile)
+    ogc3DTile = new OGC3DTile({
+        url: "./3d-tiles/PontStEtienne_2_20220508_Cesium.json",
+        renderer: renderer,
+        centerModel: true,
+        geometricErrorMultiplier: 3.0,
+        loadOutsideView: true
+    });
+    
+    
+    scene.add(ogc3DTile);
+    
+    setInterval(function () {
+        ogc3DTile.update(camera);
+    }, 20);
+}
 
 //resize
 window.addEventListener( 'resize', onWindowResize, false );
@@ -70,3 +116,5 @@ function render(){
 }
 
 render();
+
+//HELLO
